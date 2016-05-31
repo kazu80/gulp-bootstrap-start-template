@@ -8,7 +8,7 @@ var gulp        = require('gulp'),
     jQuery      = require("jquery"),
     webpack     = require('gulp-webpack');
 
-var browserReloadWait = 400;
+var browserReloadWait = 1000;
 
 gulp.task('build', function (callback) {
     runSequence('clean', 'copy', callback);
@@ -51,12 +51,15 @@ gulp.task("start",['sass', 'webpack', 'serve'], function() {
                    './app/src/js/**/*.js',
                    './app/src/sass/**/*.scss'
                ],
-               ['sass', 'webpack', 'reload']);
+               ['sass', 'reload']);
 });
 
 gulp.task("webpack", function () {
     return gulp.src('./app/src/js/main.js')
         .pipe(webpack({
+                          cache: true,
+                          watch: true,
+                          keepalive: true,
                           output: {
                               filename: 'bundle.js'
                           },
