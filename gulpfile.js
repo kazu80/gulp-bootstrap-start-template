@@ -6,6 +6,7 @@ var gulp        = require('gulp'),
     sourcemaps  = require('gulp-sourcemaps'),
     plumber     = require('gulp-plumber'),
     jQuery      = require("jquery"),
+    ExtractTextPlugin = require("extract-text-webpack-plugin"),
     webpack     = require('gulp-webpack');
 
 var browserReloadWait = 1000;
@@ -61,27 +62,30 @@ gulp.task("webpack", function () {
                           watch: true,
                           keepalive: true,
                           output: {
-                              filename: 'bundle.js'
+                              filename: 'js/[name].js'
                           },
                           devtool: "source-map",
                           module: {
                               loaders: [
                                   {
                                       test: /\.css$/,
-                                      loader: "style!css"
+                                      loader: ExtractTextPlugin.extract("style-loader","css-loader")
                                   },
                                   {
                                       test: /\.scss$/,
-                                      loaders: ["style", "css", "sass"]
+                                      loader: ExtractTextPlugin.extract("style-loader", "css-loader!sass-loader")
                                   },
                                   { test: /\.svg$/, loader: 'url-loader?mimetype=image/svg+xml' },
                                   { test: /\.(woff|woff2)$/, loader: 'url-loader?mimetype=application/font-woff' },
                                   { test: /\.eot$/, loader: 'url-loader?mimetype=application/font-woff' },
                                   { test: /\.ttf$/, loader: 'url-loader?mimetype=application/font-woff' }
                               ]
-                          }
+                          },
+                          plugins: [
+                              new ExtractTextPlugin("css/[name].css")
+                          ]
                       }))
-        .pipe(gulp.dest('./app/root/asset/js'));
+        .pipe(gulp.dest('./app/root/asset/'));
 });
 
 gulp.task('sass', function () {
